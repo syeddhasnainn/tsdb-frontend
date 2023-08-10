@@ -1,39 +1,37 @@
 import { Streamers, columns } from "./columns";
 import { DataTable } from "./data-table";
 
-interface Props {
-  streamers: Streamers[];
-}
-
-export const getServerSideProps = async () => {
+async function getData(): Promise<Streamers[]> {
+  
   const response = await fetch('https://tsdb-backend.vercel.app/data')
-  const streamers: Streamers[] = await response.json();
+  const streamers = await response.json()
 
-  return {
-    props: {
-      streamers 
-    }
-  }
-}
-
-export default function DemoPage({ streamers }: Props) {
-
-  const updatedStreamers = streamers.map((element:any) => {
+  const updatedStreamers :Streamers[] =[];
+  
+  streamers.forEach((element:any) => {
     const { twitch, twitter, follower, instagram, discord, username } = element;
-
-    return { 
-      username, 
-      twitch, 
+    const newObject = {
+      username,
+      twitch,
       twitter,
       followers: follower,
       instagram,
-      discord
-    }
-  })
+      discord,
+    };
+    
+    updatedStreamers.push(newObject);
+  });
+  
+  return updatedStreamers
+}
+
+export default async function DemoPage() {
+  
+  const data = await getData()
 
   return (
     <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={updatedStreamers} />
+      <DataTable columns={columns} data={data} />
     </div>
   )
 }
