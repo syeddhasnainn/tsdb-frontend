@@ -3,10 +3,11 @@ import { DataTable } from "./data-table";
 
 async function getData(): Promise<Streamers[]> {
   
-  const response = await fetch('https://tsdb-backend.vercel.app/data', {next: {revalidate:3600}})
+  const response = await fetch('https://tsdb-backend.vercel.app/data')
   const streamers = await response.json()
 
   const updatedStreamers :Streamers[] =[];
+  
   
   streamers.forEach((element:any) => {
     const { twitch, twitter, follower, instagram, discord, username } = element;
